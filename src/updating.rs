@@ -3,7 +3,7 @@ use bevy::{
     prelude::*,
 };
 use bevy_yarnspinner::{
-    events::{DialogueStartEvent, PresentLineEvent, PresentOptionsEvent},
+    events::{DialogueCompleteEvent, DialogueStartEvent, PresentLineEvent, PresentOptionsEvent},
     prelude::{DialogueRunner, YarnSpinnerSystemSet},
 };
 
@@ -15,6 +15,7 @@ pub(crate) fn plugin(app: &mut App) {
     app.add_systems(
         Update,
         (
+            hide_dialogue,
             show_dialogue.run_if(on_event::<DialogueStartEvent>()),
             present_line.run_if(on_event::<PresentLineEvent>()),
             present_options.run_if(on_event::<PresentOptionsEvent>()),
@@ -25,6 +26,16 @@ pub(crate) fn plugin(app: &mut App) {
             .chain()
             .after(YarnSpinnerSystemSet),
     );
+}
+
+fn hide_dialogue(
+    mut root_visibility: Query<&mut Visibility, With<UiRootNode>>,
+    mut dialogue_complete_events: EventReader<DialogueCompleteEvent>,
+) {
+    if !dialogue_complete_events.is_empty() {
+        *root_visibility.single_mut() = Visibility::Hidden;
+        dialogue_complete_events.clear();
+    }
 }
 
 fn show_dialogue(mut visibility: Query<&mut Visibility, With<UiRootNode>>) {

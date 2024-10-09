@@ -23,7 +23,7 @@ fn setup(mut commands: Commands) {
                     justify_content: JustifyContent::End,
                     ..default()
                 },
-                // visibility: Visibility::Hidden,
+                visibility: Visibility::Hidden,
                 ..default()
             },
             UiRootNode,
