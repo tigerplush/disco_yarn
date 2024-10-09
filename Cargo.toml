@@ -1,0 +1,12 @@
+[package]
+name = "disco_yarn"
+version = "0.1.0"
+edition = "2021"
+repository = ""
+homepage = ""
+authors = ["Christopher Putz"]
+description = "A disco elysium style dialogue runner ui for yarnspinner"
+
+[dependencies]
+bevy = "0.14.2"
+bevy_yarnspinner = "0.3.1"
