@@ -20,6 +20,7 @@ pub(crate) fn plugin(app: &mut App) {
             present_options.run_if(on_event::<PresentOptionsEvent>()),
             continue_dialogue,
             mouse_scroll,
+            scroll_to_newest,
         )
             .chain()
             .after(YarnSpinnerSystemSet),
@@ -106,6 +107,21 @@ fn mouse_scroll(
             dialogue_list.position = dialogue_list.position.clamp(-max_scroll, 0.);
             style.top = Val::Px(dialogue_list.position);
         }
+    }
+}
+
+fn scroll_to_newest(
+    mut query_list: Query<(&mut UiDialogueList, &mut Style, &Parent, &Node), Changed<Node>>,
+    query_node: Query<&Node>,
+) {
+    for (mut dialogue_list, mut style, parent, list_node) in query_list.iter_mut() {
+        let items_height = list_node.size().y;
+        let container_height = query_node.get(parent.get()).unwrap().size().y;
+
+        let max_scroll = (items_height - container_height).max(0.);
+
+        dialogue_list.position = -max_scroll;
+        style.top = Val::Px(dialogue_list.position);
     }
 }
 
